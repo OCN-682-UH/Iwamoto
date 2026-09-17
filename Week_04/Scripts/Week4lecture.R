@@ -52,3 +52,46 @@ mutate(penguins, bodyflip = flipper_length_mm + body_mass_g)
 mutate(penguins,
        chonk = if_else(body_mass_g > 4000, "big", "small"))
 
+#|> #do command shift M to enter this pipe, which is built into the native r instead of the %>% pipe, which is a part of the tidyverse package
+
+#select function - to select certain columns to remain in the dataset, can also rename columns with this function 
+penguins |>
+  filter(sex == "female") |>
+  mutate(log_mass = log(body_mass_g)) |>
+  select(Species = species, island, sex, log_mass)
+
+#arrange function to sort rows by a column, ascending by default, can do descending by adding desc() inside the arrange function 
+penguins |>
+  arrange(desc(body_mass_g))
+
+#summarise function calculates a table of summarized data, can keep on adding multiple summarized data thingies (like mean, min, max, etc)
+penguins |>
+  summarise(mean_flipper = mean(flipper_length_mm, na.rm = TRUE),
+            min_flipper  = min(flipper_length_mm, na.rm = TRUE))
+
+#group by function, can use with summarize function, where you group the data by diff groups before calculating a value for each group. can also group by more than one thing 
+penguins |>
+  group_by(island, sex) |>
+  summarise(mean_bill_length = mean(bill_length_mm, na.rm = TRUE),
+            max_bill_length  = max(bill_length_mm, na.rm = TRUE))
+
+#can use the count function to count the number of rows per group, helpful to know the number of observations 
+penguins |>
+  count(species)
+
+#to remove NAs from a specific column, use drop_na()
+penguins |>
+  drop_na(sex)
+
+penguins |>
+  drop_na(sex) |>
+  group_by(island, sex) |>
+  summarise(mean_bill_length = mean(bill_length_mm, na.rm = TRUE))
+
+#to pipe straight into a ggplot
+penguins |>
+  drop_na(sex) |>
+  ggplot(aes(x = sex, y = flipper_length_mm)) +
+  geom_boxplot()
+
+

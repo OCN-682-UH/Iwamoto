@@ -1,4 +1,4 @@
-## Week 4 HW ##
+## Week 4 HW: Calculating and Plotting Summary Statistics for penguin data ##
 ## Mei Iwamoto ##
 ## September 15th, 2026 ##
 

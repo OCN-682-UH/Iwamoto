@@ -1,4 +1,4 @@
-## Week 4B HW ##
+## Week 4B HW: Cleaning, Summarizing, and Plotting Maunalua chemistry data ##
 ## Mei Iwamoto ##
 ## September 16th, 2026 ##
 

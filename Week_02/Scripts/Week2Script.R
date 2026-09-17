@@ -15,3 +15,4 @@ weight <- read.csv(here("Week_02","Data","weightdata.csv"))
 head(weight)
 tail(weight)
 view(weight)
+
