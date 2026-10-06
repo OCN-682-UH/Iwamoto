@@ -5,7 +5,7 @@
   * Week 2 Script
  
 * Week 6
-  * [Quarto Homework]([https://01a10fe2-dd7a-509f-5ec7-6e0c2c8fcd85.share.connect.posit.cloud](https://01a10fd5-3252-b6dd-c0e8-d5958858be0f.share.connect.posit.cloud)
+  * [Quarto Homework](https://01a10fd5-3252-b6dd-c0e8-d5958858be0f.share.connect.posit.cloud)
  
 
 ## About me
