@@ -4,6 +4,9 @@
   * Weight data
   * Week 2 Script
  
+* Week 6
+  * [Quarto Homework](https://01a10fd5-3252-b6dd-c0e8-d5958858be0f.share.connect.posit.cloud)
+ 
 
 ## About me
 ![stream pic](IMG_7570.jpeg)
