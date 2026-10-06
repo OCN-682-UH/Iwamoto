@@ -5,7 +5,7 @@
   * Week 2 Script
  
 * Week 6
-  *![HW](https://01a10fe2-dd7a-509f-5ec7-6e0c2c8fcd85.share.connect.posit.cloud)
+  *[HW](https://01a10fe2-dd7a-509f-5ec7-6e0c2c8fcd85.share.connect.posit.cloud)
  
 
 ## About me
