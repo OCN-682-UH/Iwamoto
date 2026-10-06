@@ -1,15 +1,14 @@
 ---
-title: "Week_6_HW"
+title: "Week 6 Homework: Palmers Penguins in Quarto"
 author: "Mei Iwamoto"
-format: html
-html: 
+format: 
+  html: 
     code-fold: true              # code hidden by default, with a toggle button
     code-summary: "Show code"    # customize the button label
 editor: visual
 execute:
   warning: false   # suppress warnings in all chunks
   message: false   # suppress package loading messages
-  echo: false      # hide code by default (show results only)
   eval: true       # run all chunks (the default)
 ---
 
@@ -19,15 +18,18 @@ library(tidyverse)
 library(here)
 library(palmerpenguins)
 library(kableExtra)
+library(ggthemr)
 
+#set theme for future plots using ggthemr package
+ggthemr("dust")
 ```
 
 ## Creating a plot using the penguins data in Quarto
 
 ```{r}
 #| label: fig-penguin-mass
-#| fig-cap: "Body Mass of Adelie, Chinstrap, and Gentoo Penguins"
-#| echo: false
+#| fig-cap: "Body Mass of Adelie, Chinstrap, and Gentoo Penguins collected from 2007-2009."
+
 
 #create plot showing body mass of the three penguin species to add to quarto doc
 ggplot(penguins,
@@ -36,7 +38,7 @@ ggplot(penguins,
   labs(title = "Body Mass of Adelie, Chinstrap, and Gentoo Penguins", x="Species", y="Body Mass (grams)") 
 
 #save plot to outputs folder
-ggsave(here("Week_06", "Outputs", "HW_plot.png"))
+#ggsave(here("Week_06", "Outputs", "HW_plot.png")) I was having error messages when trying to publish to Posit so I put the # for now
 ```
 
 #### Cross referencing the plot in the prose
@@ -53,7 +55,7 @@ are shown here in @fig-penguin-mass.
 ```{r}
 #| label: tbl-adelie-body
 #| tbl-cap: Mean body mass in grams of Adelie penguins from 2007 to 2009
-#| echo: false
+
 
 #create table showing mean body mass of Adelie penguins over the years
 penguins |> 
@@ -62,8 +64,6 @@ penguins |>
   summarise(mean_body_mass=mean(body_mass_g)) |>
   kbl() #use kbl function here 
 
-#save table to outputs folder 
-ggsave(here("Week_06", "Outputs", "HW_table.png"))
 ```
 
 Mean body mass of Adelie penguins from 2007-2009 are summarized here in @tbl-adelie-body.

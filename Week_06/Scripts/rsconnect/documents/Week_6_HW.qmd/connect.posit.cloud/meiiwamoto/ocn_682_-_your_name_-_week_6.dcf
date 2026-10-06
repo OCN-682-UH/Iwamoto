@@ -8,3 +8,7 @@ appId: 01a10fd5-3252-b6dd-c0e8-d5958858be0f
 bundleId:
 url: https://connect.posit.cloud/meiiwamoto/content/01a10fd5-3252-b6dd-c0e8-d5958858be0f
 version: 1
+quarto_version: 1.10.18
+quarto_engines: knitr
+asMultiple: FALSE
+asStatic: FALSE
