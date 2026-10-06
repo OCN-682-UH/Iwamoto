@@ -1,0 +1,118 @@
+---
+title: "Week 6 lecture"
+author: "Mei Iwamoto"
+format: html
+editor: visual
+---
+
+## How to add code chunks 
+(green button above) or command option i
+```{r}
+#see code chunk here
+```
+
+code chunk options: add a #| in the chunk to control what you want printed in the chunk, like #| warning: false
+```{r}
+#| warning: false 
+#warning: false is typed here but you canʻt see it in the output file 
+
+#this prevents warnings from printing for this chunk only, if you want to apply it to the whole doc, add it to the very top
+```
+or like this to add defaults at the top of your doc: 
+
+execute:
+  warning: false   # suppress warnings in all chunks
+  message: false   # suppress package loading messages
+  echo: false      # hide code by default (show results only)
+  eval: true       # run all chunks (the default)
+
+## Use inline r code rather than manually typing numbers 
+
+so that numbers can automatically update when you run things/things are more reproducible 
+
+```{r}
+# In your prose (not a code chunk), write:
+# backtick + r + space + expression + backtick, not apostrophe!!
+
+# Examples:
+# The dataset has `nrow(penguins)` rows.
+# The mean is `round(mean(x, na.rm = TRUE), 1)`.
+# Analysis run on `Sys.Date()`.
+```
+ 
+example with palmer penguins package
+```{r}
+#load libaries
+library(palmerpenguins)
+library(tidyverse)
+```
+ 
+ The dataset has `r nrow(penguins)` rows and `r ncol(penguins)` columns. 
+ 
+ The mean bill length of penguins is `r round(mean(penguins$bill_length_mm, na.rm=TRUE))` millimeters.
+ 
+ also always use the here function with quarto docs
+ 
+## Publishing the quarto doc with posit connect cloud 
+Anyone with the link can view the doc, and everytime you re-publish the link stays the same
+How we will submit the homework!
+
+
+## Lecture pt 2
+
+Working with figures, you can change the size, resolution, file type, etc. 
+For practice, make a simple penguin plot
+```{r}
+pplot <- ggplot(penguins,
+                mapping = aes(x=bill_length_mm, y=bill_depth_mm, color=species)) +
+  geom_point() +
+  labs(x="Bill Length (mm)", y="Bill Depth (mm)", title = "Bill Length and Depth of Adelie, Chinstrap, and Gentoo Penguins")
+
+ 
+```
+
+ 
+How to cross reference figures in your quarto script and linkable in your prose
+
+step 1: Give your chunk a label starting with fig-
+```{r}
+#| label: fig-penguin-bill
+#| fig-cap: "Bill length vs Bill depth for three penguin species"
+#| echo: false
+
+ggplot(penguins, 
+       mapping = aes(x=bill_length_mm, y=bill_depth_mm, color=species)) +
+  geom_point() +
+  labs(x="Bill Length (mm)", y="Bill Depth (mm)", title = "Bill Length and Depth of Adelie, Chinstrap, and Gentoo Penguins")
+
+```
+ 
+ you can reference this figure anywhere in your prose by: @the figure label 
+ 
+ As shown in @fig-penguin-bill, bill dimensions differ clearly by species.
+ 
+ You can do the same with tables, where label must start with tbl-, use package kableExtra
+```{r}
+#| label: tbl-penguin-means
+#| tbl-cap: "Mean bill length by species."
+
+library(kableExtra)
+
+penguins |>
+  group_by(species) |>
+  summarise(mean_bill = mean(bill_length_mm, na.rm = TRUE)) |>
+  kbl()
+```
+ Then you can reference in your prose like this:
+ 
+ Mean bill lengths are summarised in @tbl-penguin-means.
+ 
+ 
+ To show your code in your output, or to toggle it on and off, you can use cold-fold
+---
+title: "My Analysis"
+format:
+  html:
+    code-fold: true              # code hidden by default, with a toggle button
+    code-summary: "Show code"    # customize the button label
+---
