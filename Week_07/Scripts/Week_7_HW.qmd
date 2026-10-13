@@ -1,0 +1,96 @@
+---
+title: "Week 7 HW - Cats on the Move Map"
+author: "Mei Iwamoto"
+format: 
+  html: 
+    code-fold: true              # code hidden by default, with a toggle button
+    code-summary: "show my hard work"    # customize the button label
+editor: visual
+execute:
+  warning: false   # suppress warnings in all chunks
+  message: false   # suppress package loading messages
+  eval: true       # run all chunks (the default)
+---
+
+## Cats on the Move
+
+Roland Kays et al. (2020) used GPS sensors on pet cats in the US, New Zealand, UK, and Australia to track their movements from 2013 - 2017 to observe their home ranges and potential ecological impacts. Each tracked catʻs characteristics were also noted alongside their GPS movement. Datasets used here are from the Movebank for Animal Tracking Data via Data is Plural.
+
+```{r}
+#load libraries
+library(tidyverse)
+library(here)
+library(tidytuesdayR) #cats on the move data
+library(maps) #simple polygon basemaps (country, state, county)
+library(mapdata)
+library(mapproj)
+
+```
+
+```{r}
+# Get the Data
+
+# Read in with tidytuesdayR package 
+# Install from CRAN via: install.packages("tidytuesdayR")
+# This loads the readme and all the datasets for the week of interest
+
+# Either ISO-8601 date or year/week works!
+
+tuesdata <- tidytuesdayR::tt_load('2023-01-31')
+
+cats_uk <- tuesdata$cats_uk
+cats_uk_reference <- tuesdata$cats_uk_reference
+```
+
+```{r}
+#clean cat data and filter
+cleancats <- cats_uk |> 
+  filter(visible=="TRUE") |> #to filter out any outliers
+  left_join(cats_uk_reference) |> #join datasets together
+  group_by(tag_id) |> 
+  mutate(totalping=n()) #see which cats got recorded the most, itʻs gracie!
+```
+
+```         
+```
+
+```{r}
+#get UK polygon for the map 
+uk <- map_data("world") |> 
+  filter(region=="UK")
+
+```
+
+```{r}
+#| label: fig-cat-move
+#| fig-cap: "The small home ranges and large local ecological impacts of pet cats"
+
+#make map of all the cat pings
+ggplot() +
+  geom_polygon(data=uk,
+               aes(x=long, y=lat, group=group),
+                fill="forest green") +
+  theme_minimal() +
+  theme(panel.background =
+          element_rect(fill = "lightblue")) + #change theme and color of ocean to blue 
+  coord_map(projection = "mercator", #this changes the map projection to mercator
+            xlim = c(-6, -4), ylim = c(52, 50)) + #change x and y lim to better show data points on the map 
+geom_point(data = cleancats,
+           aes(x=location_long, y=location_lat, color=animal_sex),  #add in cat data to the polygon
+           size = 0.6) +
+  scale_color_manual(values = c("red", "yellow")) +
+  labs(title = "GPS Tracking Pet Cats in the UK", col="Sex")
+
+ggsave(here("Week_07", "Outputs", "HWmap.png"))
+```
+
+Here is a map showing all tracked cat movements, with red points depicting female cats and yellow points depicting male cats. Datasets were cleaned of any outliers prior to mapping. @fig-cat-move
+
+```         
+```
+
+## References:
+
+> Kays R, Dunn RR, Parsons AW, Mcdonald B, Perkins T, Powers S, Shell L, McDonald JL, Cole H, Kikillus H, Woods L, Tindle H, Roetman P (2020) The small home ranges and large local ecological impacts of pet cats. Animal Conservation. [doi:10.1111/acv.12563](http://dx.doi.org/10.1111/acv.12563)
+
+> McDonald JL, Cole H (2020) Data from: The small home ranges and large local ecological impacts of pet cats \[United Kingdom\]. Movebank Data Repository. [doi:10.5441/001/1.pf315732](http://dx.doi.org/10.5441/001/1.pf315732)
