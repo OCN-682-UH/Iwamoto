@@ -7,6 +7,9 @@
 * Week 6
   * [Quarto Homework](https://01a10fd5-3252-b6dd-c0e8-d5958858be0f.share.connect.posit.cloud)
  
+* Week 7
+  * [Quarto Homework: Cats on the Move](https://01a13757-4235-cfb3-56c1-834eacc82f5a.share.connect.posit.cloud/)
+ 
 
 ## About me
 ![stream pic](IMG_7570.jpeg)
