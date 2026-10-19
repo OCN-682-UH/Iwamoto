@@ -9,7 +9,9 @@
  
 * Week 7
   * [Quarto Homework: Cats on the Move](https://01a13757-4235-cfb3-56c1-834eacc82f5a.share.connect.posit.cloud/)
- 
+
+* Week 8
+  * [Quarto Homework: Functions and Malaria Prevalence](https://01a15180-6336-ead5-9a0a-1dbcc3a4445c.share.connect.posit.cloud)
 
 ## About me
 ![stream pic](IMG_7570.jpeg)
