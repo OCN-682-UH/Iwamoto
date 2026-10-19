@@ -1,0 +1,254 @@
+---
+title: "Week 8 Lecture: Functional Programming"
+author: "Mei Iwamoto"
+format: html
+editor: visual
+execute:
+  warning: false   # suppress warnings in all chunks
+  message: false   # suppress package loading messages
+  eval: true       # run all chunks (the default)
+---
+
+## Functional Programming - writing reuseable code/functions
+
+ex: rescaling multiple columns to lie between 0 and 1 using 𝑥−min(𝑥)max(𝑥)−min(𝑥)
+
+```{r}
+#set up a data frame with random numbers 
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+head(df)
+```
+
+Without using a function, you would manually rescale like this:
+
+```{r}
+df <- df |>
+  mutate(a = (a - min(a, na.rm = TRUE)) / (max(a, na.rm = TRUE) - min(a, na.rm = TRUE))) 
+
+head(df) #now a has numbers not less than 0 and not greater than 1
+```
+
+you could copy and paste manually for each column, but that could lead to mistakes :( so instead, you could write a function
+
+Here, this function gives you the value given by that equation:
+
+```{r}
+rescale01 <- function(x) {
+  value <- (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+  return(value)
+}
+
+df |>
+  mutate(
+    a = rescale01(a),
+    b = rescale01(b),
+    c = rescale01(c),
+    d = rescale01(d)
+  )
+```
+
+Even better, you could use mutate(across(Everything function to avoid typing everything out
+
+```{r}
+df |>
+  mutate(across(everything(), rescale01))
+```
+
+## Anatomy of a function
+
+Every function has four key parts:
+
+1.  function name (should be informative but concise)
+2.  arguments - function(x) lists the inputs
+    1.  multiple arguments could be function(x,y,z)
+3.  function body - the {} block containing the actual code
+4.  return statement - what the function ends up returning when you run it
+
+### example: converting from fahrenheit to celsius
+
+1.  the conversion formula
+
+    ```{r}
+    temp_C <- (temp_F - 32) * 5 / 9
+    ```
+
+2.  create the function structure
+
+    ```{r}
+    f_to_celsius <- function(temp_F) { #always start with the word function, and the input value/argument
+      
+      temp_C <- (temp_F - 32) * 5 / 9 #input code from above
+      return(temp_C) #add the return statement
+    }
+
+    f_to_celsius(2) #test it out! the function should have saved in your environment, and you can input values to make it work 
+    ```
+
+Write a function converting Celsius to Kelvin
+
+```{r}
+cel_to_kel <- function(cel) {
+  kel = cel + 273.15
+  return(kel)
+}
+
+cel_to_kel(2)
+```
+
+### Making plot functions
+
+You can make a function out of a specific plot format to maintain consistency across figures and save time
+
+Use the penguin dataset to create a reuseable plot function
+
+```{r}
+library(palmerpenguins)
+library(PNWColors)
+
+pal <- pnw_palette("Lake", 3, type = "discrete")
+
+ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, color = island)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  scale_color_manual("Island", values = pal) +
+  theme_bw()
+```
+
+Name and set up the function:
+
+```{r}
+myplot <- function() {
+  pal <- pnw_palette("Lake", 3, type = "discrete")
+  
+  ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, color = island)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    scale_color_manual("Island", values = pal) +
+    theme_bw()
+}
+```
+
+Add in flexible arguments to the function to make it broadly useable:
+
+```{r}
+myplot <- function(data, x, y) {
+  pal <- pnw_palette("Lake", 3, type = "discrete")
+  
+  ggplot(data, aes(x = x, y = y, color = island)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    scale_color_manual("Island", values = pal) +
+    theme_bw()
+}
+```
+
+You need to use {{}} for column names to pass column names as arguments inside formulas, otherwise youʻll get an error:
+
+```{r}
+myplot <- function(data, x, y) {
+  pal <- pnw_palette("Lake", 3, type = "discrete")
+  
+  ggplot(data, aes(x = {{x}}, y = {{y}}, color = island)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    scale_color_manual("Island", values = pal) +
+    theme_bw()
+}
+```
+
+Then test it
+
+```{r}
+myplot(data = penguins, x = body_mass_g, y = bill_length_mm)
+
+#test again!
+myplot(data = penguins, x=body_mass_g, y=flipper_length_mm)
+```
+
+You could add default arguments so you donʻt have to specify everything: ex like data=penguins
+
+```{r}
+myplot <- function(data = penguins, x, y) { #make data=penguins here
+  pal <- pnw_palette("Lake", 3, type = "discrete")
+  
+  ggplot(data, aes(x = {{x}}, y = {{y}}, color = island)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    scale_color_manual("Island", values = pal) +
+    theme_bw()
+}
+
+#now you can call it with just the column arguments, donʻt need to specify the dataset
+myplot(x = body_mass_g, y = flipper_length_mm)
+```
+
+### How to layer onto the function
+
+You can use + to add ggplot layers
+
+```{r}
+#you can add labels that way to the plot 
+myplot(x = body_mass_g, y = flipper_length_mm) +
+  labs(x = "Body mass (g)", y = "Flipper length (mm)") 
+```
+
+## Adding control flow with if-else
+
+You can make your function even more broad with if-else, aka if you want something in the function or not
+
+### The if-else statement
+
+use if-else to execute different code based on a condition
+
+```{r}
+a <- 4
+b <- 5
+
+if (a > b) { #if a is greater than b, f will be 20, otherwise it will be 10 
+  f <- 20
+} else {
+  f <- 10
+} #all the curlies have to be set up like this apparently spacing wise 
+
+f
+```
+
+### Make your function more flexible 
+
+you can add an argument to toggle features on/off - here, you can add a smoother to the plot if argument is true
+
+```{r}
+myplot <- function(data = penguins, x, y, lines = TRUE) { #add argument for lines, they are by default on here 
+  pal <- pnw_palette("Lake", 3, type = "discrete")
+  
+  if (lines == TRUE) { #if itʻs true, geom-smooth, if not, no geom smooth
+    ggplot(data, aes(x = {{x}}, y = {{y}}, color = island)) +
+      geom_point() +
+      geom_smooth(method = "lm") +
+      scale_color_manual("Island", values = pal) +
+      theme_bw()
+  } else {
+    ggplot(data, aes(x = {{x}}, y = {{y}}, color = island)) +
+      geom_point() +
+      scale_color_manual("Island", values = pal) +
+      theme_bw()
+  }
+}
+```
+
+test it out
+
+```{r}
+myplot(x = body_mass_g, y = flipper_length_mm) #here itʻs the default, so there is a smoother 
+
+#without lines
+myplot(x = body_mass_g, y = flipper_length_mm, lines = FALSE)
+```
+
+## Ethical AI Use for Data Science

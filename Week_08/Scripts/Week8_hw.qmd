@@ -1,0 +1,84 @@
+---
+title: "Week 8 HW: Functions for Malaria Prevalence"
+author: "Mei Iwamoto"
+format: 
+  html: 
+    code-fold: true              # code hidden by default, with a toggle button
+    code-summary: "show my hard work"    # customize the button label
+editor: visual
+execute:
+  warning: false   # suppress warnings in all chunks
+  message: false   # suppress package loading messages
+  eval: true       # run all chunks (the default)
+---
+
+## Calculating malaria prevalence in collected *Culex quinquefasciatus* mosquitoes at Kīpahulu Valley, Maui in 2002 and 2019
+
+The dataset used is from a USGS data release referenced below: [10.5066/P1BDBYFY](https://doi.org/10.5066/P1BDBYFY). Adult *Culex quinquefasciatus* mosquitoes were trapped in 2002 and again in 2019 in Kīpahulu Valley. Collected mosquitoes were tested for malaria infection status. Malaria prevalence was then calculated by taking the average of all the infection statuses, as infection can be coded as 0s and 1s (binary).
+
+```{r}
+#load libraries
+library(tidyverse)
+library(here)
+library(ggthemr)
+ggthemr("dust") #set theme for plots
+```
+
+```{r}
+#import malaria dataset from Kīpahulu Valley, collected in 2002 and 2019
+kipa2002 <- read.csv(here("Week_08", "Data","kipa2002data.csv"))
+```
+
+```{r}
+#save functions
+#standard error of the mean (just for reference for myself)
+se <- function(x) {
+  sqrt(var(x)/length(x))
+}
+
+#standard error of the binomial, for prevalence data where you have 0s and 1st
+se.final <- function(p, n) {
+  ifelse(sqrt(p*(1-p)/n)==0, (( 1-0.05^(1/n))/2), sqrt(p*(1-p)/n))
+}
+
+#plotting function
+prevplot <- function(data, x, y, z) {
+  ggplot(data, aes(x={{x}}, y={{y}}, color={{z}})) +
+    geom_point() 
+}
+```
+
+```{r}
+#calculate prevalence using the standard error for binomials function 
+prev1 <- kipa2002 |>  
+  group_by(site, year) |>  
+  summarize(
+    prev=mean(diss_inf_all, na.rm=TRUE),
+    prev_n = length(diss_inf_all),
+    prev_se=se.final(prev, prev_n)
+    ) 
+
+```
+
+```{r}
+#create plots showing malaria prevalence across years using the plotting function
+prevplot(data=prev1, x=year, y=prev, z=site) +
+  geom_errorbar(aes(ymin = prev - prev_se, ymax= prev + prev_se), width=0.2) +
+  labs(title="Malaria Prevalence of Collected Culex 
+  Mosquitoes at Kīpahulu Valley", x="Year Collected", y="Malaria Prevalence", color="Site")
+
+ggsave(here("Week_08", "Outputs", "HWplot1.png"), width=5, height=7)
+
+#plot showing malaria prevalence across different sites 
+prevplot(data=prev1, x=site, y=prev, z=as.factor(year)) + #had to change year into a factor for it to plot it? 
+  geom_errorbar(aes(ymin = prev - prev_se, ymax= prev + prev_se), width=0.2) +
+  labs(title = "Malaria Prevalence of Collected Culex 
+  Mosquitoes at Kīpahulu Valley", x="Site", y="Malaria Prevalence", color="Year")
+
+ggsave(here("Week_08", "Outputs", "HWplot2.png"), width=5, height=7)
+
+```
+
+### References 
+
+LaPointe, Dennis, Lauren K. Smith, Samuel Aruch, Carter T. Atkinson, M. Renee Bellinger, Samantha Buechner, Seth Judge, Eben Paxton, and Katherine M. McClure (2025). *"Kīpahulu Valley, Haleakalā National Park, Maui bird, mosquito, and avian malaria infection data, 2002 and 2019".* [10.5066/P1BDBYFY](https://doi.org/10.5066/P1BDBYFY).
