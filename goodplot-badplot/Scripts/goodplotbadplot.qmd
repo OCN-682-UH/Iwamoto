@@ -1,0 +1,94 @@
+---
+title: "Good Plot Bad Plot: Why we should farm Blisseys"
+author: "Mei Iwamoto"
+format: 
+  html: 
+    code-fold: true              # code hidden by default, with a toggle button
+    code-summary: "show my hard work"    # customize the button label
+editor: visual
+execute:
+  warning: false   # suppress warnings in all chunks
+  message: false   # suppress package loading messages
+  eval: true       # run all chunks (the default)
+---
+
+## Pokemon data
+
+The dataset used here is sourced from {pokemon} ([CRAN](https://cran.r-project.org/package=pokemon) \| [github](https://github.com/williamorim/pokemon)), an R package, and was put together by [Frank Hull](https://github.com/frankiethull).
+
+```{r}
+#load libraries
+library(tidyverse)
+library(here)
+library(cowplot) #to add pic to plot
+library(magick)
+library(ggthemr)
+library(ggrepel) #to label some points
+```
+
+```{r}
+# Using R
+# Option 1: tidytuesdayR R package 
+## install.packages("tidytuesdayR")
+
+tuesdata <- tidytuesdayR::tt_load('2025-04-01')
+pokemon_df <- tuesdata$pokemon_df
+```
+
+```{r}
+#subset blissey for good plot, to highlight that data point
+blissey <- pokemon_df |> 
+  filter(pokemon=="blissey")
+```
+
+```{r}
+#plotting
+ggthemr_reset() #reset usual theme for plots I use
+theme_set(theme_cowplot())
+
+#bad plot
+notgood <- ggplot(pokemon_df, mapping = aes(x=base_experience, y=attack)) +
+  geom_text(aes(label=base_experience), color="deeppink1") +
+  labs(title="who to farm", y="biggest muscles", x="much exp") +
+  coord_cartesian(ylim=c(0, 1000)) + #change y axis
+  scale_y_continuous(breaks = c(1,23,789)) + #manual breaks
+  scale_x_continuous(breaks=c(0)) +
+  theme(axis.title = element_text(angle = 27, colour =  "pink"),
+        plot.title = element_text(colour =  "pink", angle=12),
+        panel.grid.major = element_line("pink"),
+        panel.border = element_rect("pink"),
+        axis.line = element_line("pink"),
+        axis.text = element_text(color = "pink"))
+
+#add blissey picture
+ggdraw() +
+  draw_plot(notgood)+
+  draw_image(here("goodplot-badplot","242MS6.png"))
+
+ggsave(here("goodplot-badplot","Outputs","horribleplot.png"))
+
+```
+
+This is an example of a bad plot using the Pokemon dataset from Tidy Tuesday. First, the actual data points are very hard to see in the plot - they are obscured by this large image of Blissey and the y-axis goes up too high so the points are all scattered together. Each data point is also labeled by text/numbers instead of smaller dots which also makes it hard to see.
+
+Next, both the plot title and the axes titles are hard to read - they are either angled weirdly or in a harder to see color. The x-axis has no tick marks, while the y-axis has three breaks put in at seemingly random increments. All of the actual titles donʻt give any actual information on what they represent nor units of measure for the axis titles.
+
+```{r}
+#set a nicer looking theme to use for the good plot
+ggthemr("dust")
+
+#create better plot with the same data
+betterplot <- ggplot(pokemon_df, mapping = aes(x=base_experience, y=attack)) + 
+  geom_point(size=1) +
+  labs(title="Blissey: The Best Pokemon to Farm", x="Base Experience", y="Attack Points", subtitle = "Base Experience by Attack Points plotted of 949 Pokemon") +
+  geom_point(data = blissey, color="blue", shape = "square") +
+  geom_label_repel(data=blissey, aes(label = pokemon), #from ggrepel package
+                   box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')
+
+betterplot
+ggsave(here("goodplot-badplot","Outputs","betterplot.png"))
+```
+
+Here is a much better plot showing 949 pokemon plotted by their Attack Points and Base Experience. The titles and caption are much more informative and you can more clearly see the spread of the data points here. Finally, the data point for Blissey, the pokemon of interest, is highlighted in a way that is noticeable but does not get in the way of the other data points.
