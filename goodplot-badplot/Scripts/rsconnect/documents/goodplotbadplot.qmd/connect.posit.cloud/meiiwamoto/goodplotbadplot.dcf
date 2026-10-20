@@ -1,0 +1,12 @@
+name: goodplotbadplot
+title: goodplotbadplot
+username: meiiwamoto
+account: meiiwamoto
+server: connect.posit.cloud
+hostUrl: https://api.connect.posit.cloud/v1
+appId: 01a15b74-0ba9-beb2-15b5-92556135e949
+bundleId:
+url: https://connect.posit.cloud/meiiwamoto/content/01a15b74-0ba9-beb2-15b5-92556135e949
+version: 1
+asMultiple: FALSE
+asStatic: TRUE

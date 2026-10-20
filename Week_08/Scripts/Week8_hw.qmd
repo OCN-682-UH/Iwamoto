@@ -37,8 +37,9 @@ se <- function(x) {
 }
 
 #standard error of the binomial, for prevalence data where you have 0s and 1st
-se.final <- function(p, n) {
-  ifelse(sqrt(p*(1-p)/n)==0, (( 1-0.05^(1/n))/2), sqrt(p*(1-p)/n))
+#here,
+se.final <- function(p, n) { #here, p would be the mean prevalence, and n would be the length of all the infection statuses
+  ifelse(sqrt(p*(1-p)/n)==0, (( 1-0.05^(1/n))/2), sqrt(p*(1-p)/n)) #so variance of the binomial is pq, where q =1-p, when the binomial is a bernoulli
 }
 
 #plotting function
@@ -88,6 +89,6 @@ ggsave(here("Week_08", "Outputs", "HWplot2.png"), width=5, height=7)
 
 ```
 
-### References 
+### References
 
 LaPointe, Dennis, Lauren K. Smith, Samuel Aruch, Carter T. Atkinson, M. Renee Bellinger, Samantha Buechner, Seth Judge, Eben Paxton, and Katherine M. McClure (2025). *"Kīpahulu Valley, Haleakalā National Park, Maui bird, mosquito, and avian malaria infection data, 2002 and 2019".* [10.5066/P1BDBYFY](https://doi.org/10.5066/P1BDBYFY).
