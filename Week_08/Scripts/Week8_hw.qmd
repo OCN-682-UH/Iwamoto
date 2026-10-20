@@ -49,14 +49,23 @@ prevplot <- function(data, x, y, z) {
 ```
 
 ```{r}
-#calculate prevalence using the standard error for binomials function 
+#calculate prevalence of each site per year using the standard error for binomials function 
 prev1 <- kipa2002 |>  
   group_by(site, year) |>  
   summarize(
     prev=mean(diss_inf_all, na.rm=TRUE),
     prev_n = length(diss_inf_all),
-    prev_se=se.final(prev, prev_n)
+    prev_se=se.final(prev, prev_n) #first example for se function
     ) 
+
+#calculate prevalence per year only using the standard error for binomials, 2nd example for this function!
+prevyear <- kipa2002 |> 
+  group_by(year) |> 
+  summarize(
+    prev=mean(diss_inf_all, na.rm=TRUE),
+    prev_n =length(diss_inf_all),
+    prev_se=se.final(prev, prev_n)
+  )
 
 ```
 
