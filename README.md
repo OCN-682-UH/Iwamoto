@@ -12,6 +12,7 @@
 
 * Week 8
   * [Quarto Homework: Functions and Malaria Prevalence](https://01a15180-6336-ead5-9a0a-1dbcc3a4445c.share.connect.posit.cloud)
+  * [Good Plot, Bad Plot: Farming Blisseys](https://01a15b74-0ba9-beb2-15b5-92556135e949.share.connect.posit.cloud/)
 
 ## About me
 ![stream pic](IMG_7570.jpeg)
