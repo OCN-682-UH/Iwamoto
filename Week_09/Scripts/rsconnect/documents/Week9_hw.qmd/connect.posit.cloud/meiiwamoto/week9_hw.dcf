@@ -1,0 +1,12 @@
+name: week9_hw
+title: Week9_hw
+username: meiiwamoto
+account: meiiwamoto
+server: connect.posit.cloud
+hostUrl: https://api.connect.posit.cloud/v1
+appId: 01a17f6f-9ad1-9b0e-9e69-98a4fc0c0702
+bundleId:
+url:
+version: 1
+asMultiple: FALSE
+asStatic: TRUE

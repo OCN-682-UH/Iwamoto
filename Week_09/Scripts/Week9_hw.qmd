@@ -1,0 +1,82 @@
+---
+title: "Week 9 Homework"
+author: "Mei Iwamoto"
+format: html
+editor: visual
+execute:
+  warning: false   # suppress warnings in all chunks
+  message: false   # suppress package loading messages
+  eval: true       # run all chunks (the default)
+---
+
+## Homework
+
+Working with **intertidal data**. Your goal is to make a plot where at least one axis is a **factor in a meaningful order**.
+
+- Data files in the `data/` folder: `intertidal.csv` and `intertidal_latitude.csv` (plus a data dictionary)
+
+- You may need to use string-cleaning skills (check out the **{janitor}** [package](https://sfirke.github.io/janitor/articles/janitor.html)) to tidy column names
+
+- If you visualize by **tide height**, it must go Low → Mid → High on the plot
+
+- If you visualize by **site**, it must go in order of **latitude** (N→S or S→N)
+
+```{r}
+#load libraries
+library(tidyverse)
+library(here)
+library(forcats)
+library(janitor) #for cleaning data
+library(ggthemr)
+```
+
+```{r}
+#import data
+intertide <- read.csv(here("Week_09","Data","intertidaldata.csv"))
+lat <- read.csv(here("Week_09", "Data", "intertidaldata_latitude.csv"))
+```
+
+### Cleaning Intertidal Data
+
+```{r}
+#filter data to only the scripps site and summarize the bare rock data
+scripps <- intertide |> 
+  clean_names() |>  #from janitor package
+  filter(site=="Scripps") |> 
+  group_by(quadrat) |> 
+  summarize(
+    mean_rock = mean(bare_rock))
+
+glimpse(scripps) #looks like the quadrat data has to be cleaned :(
+
+#clean up data
+scripps1 <- scripps |> 
+  mutate(clean_quadrat = recode(quadrat, "High  "="High", "Low ."="Low", "Mid " = "Middle", " High"="High", "Mid  1" ="Middle", " Low" = "Low", " Mid"="Middle", " Low  ."="Low", "Mid"="Middle")) #also edit mid to be middle for when I plot it
+
+#resummarize now that itʻs clean
+cleanscrip <- scripps1 |>  
+  group_by(clean_quadrat) |> 
+  summarize(
+    meanrock=mean(mean_rock)
+  ) 
+  
+#manually set the levels of the tidal height so it goes in an order that makes sense
+cleanscrip$clean_quadrat <-  factor(c("Low","Middle","High"),
+                           levels=c("Low", "Middle", "High"))
+
+```
+
+### Plotting the Bare Rock percent cover at Scripps
+
+```{r}
+#set plot theme
+ggthemr("lilac") 
+
+#plot showing the average percent cover of bare rock in quadrats at the scripps site only 
+ggplot(cleanscrip, mapping = aes(x=clean_quadrat, y=meanrock)) +
+  geom_col() +
+  labs(title="Average Percent Cover of Bare Rock at Scripps", x="Tidal Height", y="Percent Cover (%)") +
+  coord_cartesian(ylim=c(0,100)) 
+
+ggsave(here("Week_09","Outputs","HWplot.png"))
+```
