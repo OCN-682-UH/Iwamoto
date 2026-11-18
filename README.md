@@ -16,6 +16,9 @@
  
 * Week 9
   * [Quarto Homework: Factors](https://01a17f6f-9ad1-9b0e-9e69-98a4fc0c0702.share.connect.posit.cloud/)
+ 
+* Week 11
+  * [Shiny App Homework: Ikea Furniture](https://01a1eddd-fe0d-ea62-2f88-7529fce4fabf.share.connect.posit.cloud)
 
 ## About me
 ![stream pic](IMG_7570.jpeg)
