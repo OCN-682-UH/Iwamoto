@@ -1,0 +1,15 @@
+---
+title: "OPIHI Data: Cleaning and Creating Master Datasheet"
+author: "Mei Iwamoto"
+format: 
+  html: 
+    code-fold: true              # code hidden by default, with a toggle button
+    code-summary: "show my hard work"    # customize the button label
+editor: visual
+execute:
+  warning: false   # suppress warnings in all chunks
+  message: false   # suppress package loading messages
+  eval: true       # run all chunks (the default)
+---
+
+## OPIHI Data Organization + Cleaning
