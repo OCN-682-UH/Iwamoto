@@ -21,7 +21,7 @@
   * [Shiny App Homework: Ikea Furniture](https://01a1eddd-fe0d-ea62-2f88-7529fce4fabf.share.connect.posit.cloud)
  
 * Week 13
-  * [Quarto Homework](https://01a209f3-c7a8-49ec-733e-7013c9fadfb2.share.connect.posit.cloud)
+  * [Quarto Homework - Iterative Coding](https://01a209f3-c7a8-49ec-733e-7013c9fadfb2.share.connect.posit.cloud)
 
 ## About me
 ![stream pic](IMG_7570.jpeg)
